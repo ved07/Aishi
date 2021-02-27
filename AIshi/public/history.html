@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Check your Symptoms || AIshi</title>
+
+  <script src="https://www.gstatic.com/firebasejs/6.2.4/firebase-app.js"></script>
+
+  <!--All Script srcs from external libraries-->
+  <script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-firestore.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-messaging.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+  <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+  <!-- Initialize Firebase -->
+  <script>
+  var firebaseConfig = {
+    apiKey: 'AIzaSyAGS5AD88KAAWnf66gRj_rOykRmvVncuuQ',
+    authDomain: 'aishiai.firebaseapp.com',
+    databaseURL: 'https://aishiai.firebaseio.com',
+    storageBucket: 'aishiai.appspot.com',
+    projectId: 'aishiai'
+  };
+  firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <style>
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    .jumbotron {
+      color: #ffffff;
+      height: 100vh;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .fullScreen {
+      height: 100vh;
+    }
+
+    .symptomDiv {
+      background-color:#000000;
+      margin-top: 5vh;
+      padding-left:10vh;
+      padding-right:10vw;
+      padding-top:5vh;
+      padding-bottom:5vh;
+      border-radius:10px;
+      color:#FFFFFF;
+    }
+
+    .callBtn {
+      background-color:#3b3b3b;
+    }
+  </style>
+
+</head>
+
+<body style="background-color:#f2f2f2">
+  <nav class="navbar navbar-fixed-top" style="background-color: #f2f2f2">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar" style="background-color:black"></span>
+          <span class="icon-bar" style="background-color:black"></span>
+          <span class="icon-bar" style="background-color:black"></span>
+        </button>
+        <a class="navbar-brand" href="#">AIshi</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li><a href="../">Home</a></li>
+          <li><a href="../history">History</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+      </div>
+  </nav>
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Log In</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label class="col-form-label">Email:</label>
+              <input type="text" class="form-control" autocomplete="off" id="email" placeholder="Enter Email"></input>
+            </div>
+            <div class="form-group">
+              <label class="col-form-label">Password</label>
+              <input type="password" id="password" placeholder="Enter Password" autocomplete="off" class="form-control"></input>
+            </div>
+          </form>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="emailLogin()">Log In</button>
+          <button type="button" class="btn btn-danger" onclick="googleLogin()">Or Log in with Google</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+    function googleLogin() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider);
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          window.location.assign('../loggedIn');
+        } else {
+          alert('You are not signed in');
+        }
+      });
+    }
+
+    function emailLogin() {
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+      firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        console.error("Error:", error.code);
+      });
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          window.location.assign('../loggedIn');
+          user.updateProfile({
+            photoURL: "pfp.png"
+          });
+        } else {
+          alert('You are not signed in');
+        }
+      });
+    }
+  </script>
+
+
+  <!--Need the cycle signup to go here-->
+</br>
+</br>
+
+
+</br>
+
+  <h3><center>History of Conditions<center></h3>
+    <p><center>Access all details and contact a doctor if you have any queries</center></p>
+  </br>
+
+  <div style="padding-top:20vh; padding-right:10vh; padding-left:10vh" onload="loadHistory()" id="container">
+    <div style="background-color:#000000;  padding-left:10vh; padding-right:10vw; padding-top:5vh; padding-bottom:5vh; border-radius:10px; color:#FFFFFF" class="text-center">
+      <h>Ridhima Narain</h><br>
+      <i>On 3rd May</i>
+      <P> Symotoms: Cold symptoms come on gradually and can include: a blocked or runny nose a sore throat headaches muscle aches coughs sneezing a raised temperature pressure in your ears and face loss of taste and smell</p><br>
+      <button>Ask doctor for help</button>
+    </div>
+
+  </div>
+
+  </body>
+  <script src="history.js"></script>
+  </html>

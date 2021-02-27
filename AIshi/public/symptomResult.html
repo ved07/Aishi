@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Check your Symptoms || AIshi</title>
+
+  <script src="https://www.gstatic.com/firebasejs/6.2.4/firebase-app.js"></script>
+
+  <!--All Script srcs from external libraries-->
+  <script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-firestore.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-messaging.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+  <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+  <!-- Initialize Firebase -->
+  <script>
+    var firebaseConfig = {
+      apiKey: 'AIzaSyAGS5AD88KAAWnf66gRj_rOykRmvVncuuQ',
+      authDomain: 'aishiai.firebaseapp.com',
+      databaseURL: 'https://aishiai.firebaseio.com',
+      storageBucket: 'aishiai.appspot.com',
+      projectId: 'aishiai'
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <style>
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    .jumbotron {
+      color: #ffffff;
+      height: 100vh;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .fullScreen {
+      height: 100vh;
+    }
+  </style>
+
+</head>
+
+<body style="background-color:#f2f2f2">
+  <nav class="navbar navbar-fixed-top" style="background-color: #f2f2f2">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar" style="background-color:black"></span>
+          <span class="icon-bar" style="background-color:black"></span>
+          <span class="icon-bar" style="background-color:black"></span>
+        </button>
+        <a class="navbar-brand" href="#">AIshi</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li><a href="../">Home</a></li>
+          <li><a href="../history">History</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+      </div>
+  </nav>
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Log In</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label class="col-form-label">Email:</label>
+              <input type="text" class="form-control" autocomplete="off" id="email" placeholder="Enter Email"></input>
+            </div>
+            <div class="form-group">
+              <label class="col-form-label">Password</label>
+              <input type="password" id="password" placeholder="Enter Password" autocomplete="off" class="form-control"></input>
+            </div>
+          </form>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="emailLogin()">Log In</button>
+          <button type="button" class="btn btn-danger" onclick="googleLogin()">Or Log in with Google</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+    function googleLogin() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider);
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          window.location.assign('../loggedIn');
+        } else {
+          alert('You are not signed in');
+        }
+      });
+    }
+
+    function emailLogin() {
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+      firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        console.error("Error:", error.code);
+      });
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          window.location.assign('../loggedIn');
+          user.updateProfile({
+            photoURL: "pfp.png"
+          });
+        } else {
+          alert('You are not signed in');
+        }
+      });
+    }
+  </script>
+
+
+</br>
+</br>
+
+
+</br>
+      <form class="well form-horizontal" action=" " method="post"  id="contact_form">
+  <fieldset>
+
+  <h3><center>Check your symptoms<center></h3>
+    <p><center>Please Fill out form to help us understand your symptoms in detail<center></p>
+  </br>
+
+  <!-- Text input-->
+  <div class="form-group" >
+    <label class="col-md-4 control-label">Patient First Name</label>
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input  name="first_name" placeholder="First Name" id="firstName" class="form-control"  type="text" required="required">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-4 control-label" >Patient Last Name</label>
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+          <input name="last_name" placeholder="Last Name" class="form-control"  type="text" id="lastName" required="required">
+        </div>
+      </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="example-date-input" class="col-md-4 control-label">Date of Birth</label>
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+        <input class="form-control" type="date" id="birthDate" value="1999-12-31" id="example-date-input" required="required">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-4 control-label">NHS/Insurance Number (if applicable)</label>
+      <div class="col-md-4">
+      <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></span>
+    <input name="phone" placeholder="123-456-7890" id="insNO" class="form-control" type="text" required="none">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <label class="col-md-4 control-label">City</label>
+      <div class="col-md-4">
+      <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+    <input name="city" placeholder="City" class="form-control" id="city" type="text" required="required">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <label class="col-md-4 control-label">Symptoms</label>
+      <div class="col-md-4">
+      <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+    <textarea name="zip" id="symptoms" placeholder="Help us understand your symptoms as easily as possible. Fill this out with all the relevant information" class="form-control"  type="textarea" required="required" style="height:35vh; padding:2vh"></textarea>
+      </div>
+  </div>
+  </div>
+
+   <div class="form-group">
+        <label class="col-md-4 control-label">Share with your local GP?</label>
+        <div class="col-md-4">
+          <div class="radio">
+            <label>
+              <input type="radio" name="hosting" value="yes" /> I am happy for my information to be shared with my local GP/practice.
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="hosting" value="no" /> I am NOT happy for my information to be shared with my local GP/practice.
+            </label>
+          </div>
+        </div>
+    </div>
+
+      </br>
+    </br>
+
+
+  <div class="form-group">
+    <label class="col-md-4 control-label"></label>
+    <div class="col-md-4">
+      <button type="submit" class="btn btn-warning" onclick="submitForm()">Submit <span class="glyphicon glyphicon-send"></span></button>
+    </div>
+  </div>
+
+      </fieldset>
+    </form>
+  </div>
+  </div>
+
+  </body>
+  <script src="index.js"></script>
+  </html>
